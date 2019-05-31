@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://212.150.245.226/~bareket/merge.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <script type="text/javascript" src="./merge_files/jquery-3.1.0.js"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>
+    <script type="text/javascript" src="./merge_files/JavaScript1.js"></script>
+    <script type="text/javascript" src="./merge_files/filereader.js"></script>
+    <script type="text/javascript" src="./merge_files/ReadFile.js"></script>
+    <script type="text/javascript" src="./merge_files/Hash.js"></script>
+    <script type="text/javascript" src="./merge_files/hashset.js"></script>
+    <script type="text/javascript" src="./merge_files/hashtable.js"></script>
+    <script type="text/javascript" src="./merge_files/OrderedMap.js"></script>
+    
+    <meta name="viewport" content="width=device-width">
+
+    <meta name="keywords" content="Progress, Bar, Javascript, UI, Library, Widgets, Plugins, Component, jQuery, Multi, Sparklines">
+    <meta name="description" content="(Javascript) Multiple progress bar control and tiny chart (sparkline) Features; initial-mode, multi-processing, categorical-processing, limit-lines">
+    <meta name="author" content="Bugra OZDEN">
+
+    <link rel="stylesheet" href="./merge_files/progressbar.css">
+  <link rel="stylesheet" href="./merge_files/main.css">  
+    <script type="text/javascript" src="./merge_files/progressbar.min.js"></script>
+
+    <style type="text/css">
+        #my-progressbar-container {
+            position: relative;
+            width: 200px; /* my-progressbar width */
+            padding: 20px 5px 20px 5px; /* Space for progresbar-texts */
+            background-color: transparent;
+        }
+
+        .progressbar-text {
+            position: absolute;
+            font-family: Arial;
+            font-size: 14px;
+            color: #333333;
+        }
+
+            .progressbar-text.top-right {
+                top: 5px;
+                right: 7px;
+            }
+
+            .progressbar-text.top-left {
+                top: 5px;
+                left: 7px;
+            }
+
+            .progressbar-text.bottom-right {
+                bottom: 5px;
+                right: 7px;
+            }
+
+            .progressbar-text.bottom-left {
+                bottom: 5px;
+                left: 7px;
+            }
+			.borderexample
+			{
+			border-style:solid;
+			border-color:#00000;
+			} 
+    </style>
+
+<script async="" src="./merge_files/adblocker-chromeglobalinjectjs.js"></script></head>
+
+<body>
+
+  <div id="header">
+ <table width="90%"><tbody><tr><td width="90%"><h1 style="color:white">VennBlast - Merge<img src="./merge_files/venndiagram.png" height="30" width="32"></h1></td>  <td><img src="./merge_files/ariel_logo_en.jpg" width="150" height="40"></td></tr></tbody></table>
+ <br></div>
+    <div class="box">
+<div id="locator">
+<img src="./merge_files/merge.png"><br>
+</div>
+        <table>
+            <tbody><tr>
+                <td>
+
+                    <form id="form1" runat="server">
+
+
+			
+                        <div style="border-collapse: collapse; border: 1px solid black;  background-color: white;">
+						<div>
+                     <b>   Group A </b>   <input type="file" id="fileinput1" multiple="">
+                        </div>
+
+                        <div>
+                  <b>     Group B  </b>   <input type="file" id="fileinput2" multiple="">
+                        </div>
+
+                        <div>
+                  <b>      Group C   </b> <input type="file" id="fileinput3" multiple="">
+                        </div>
+
+                        <div>
+                       <center>    <p> <input type="button" id="button1" value="merge files">                        <input type="button" button="" id="Button2" value="clear all" onclick="window.location.reload()">
+
+<br>   <input type="button" id="SaveTextToFileButtom" value="Save to csv file" onclick="downloadCSV({ filename: &quot;stock-data.csv&quot; });" style="display: none;">
+</p></center>
+                        </div>
+
+						</div>
+                        <br>
+					
+                         
+                
+				<div style="border-collapse: collapse; border: 1px solid black;  background-color: white;">
+                    
+              <center>         <b>intra group options</b></center> 
+                    
+                    <p>
+                        <input type="radio" id="IntraGroupOptions_useQuery_input" autopostback="true" checked="" name="input1">use query
+                        <input type="radio" id="IntraGroupOptions_useSubject_input" name="input1">use subject
+                    </p>
+                    <input type="radio" id="IntraGroupOptions_union_input" checked="" name="input2">Union
+                    <input type="radio" id="IntraGroupOptions_intersection_input" name="input2">intersection
+                    <p>
+                        <input type="CheckBox" id="IntraGroupOptions_firstHit_CheckBox" checked="">first hit
+                        <br></p></div><p>
+</p><div style="border-collapse: collapse; border: 1px solid black;  background-color: white;">
+               <center>     <b> inter groups options</b> </center>  
+                    <p>
+                        <input type="radio" id="InterGroupOptions_UseQuery_RadioButtom" runat="server" checked="" name="input3">use query
+                        <input type="radio" id="InterGroupOptions_UseSubject_RadioButtom" runat="server" name="input3">use subject
+                    </p>
+                    </div><br>
+								<a href="http://www.ariel.ac.il/images/stories/site/projects/FunctionalBioinformaticsLab/Test_Data.zip"> Download Test Data</a>  
+								<a href="http://212.150.245.226/~bareket/filter.html">Filter Files</a><br>
+					<a href="http://www.ariel.ac.il/images/stories/site/projects/FunctionalBioinformaticsLab/VennBLAST_v1.zip">VennBlast Download Exe</a>
+
+                </form></td>
+				   <td>
+
+        <div id="venn"></div>
+        <div style="clear: both;"></div>
+        <div id="foo">
+            <script src="./merge_files/d3.min.js"></script>
+            <script src="./merge_files/venn.js"></script>
+    </div></td>
+             <td valign="top">
+<br><br><br><br>
+                 <div id="MyP" style="display: none;">
+                     <table style="border-collapse: collapse; border: 1px solid black;">
+
+                         <tbody><tr>
+                             <td style="background: #C0C0FE; color: black; ">|A|</td>
+                             <td>
+                                 <input class="input-mini venn_area" id="A" type="hidden"><input id="AT" style="background: #C0C0FE; color: black; width: 5em;">
+                             </td>
+                             <td style="background: #C0C0FE; color: black; ">
+                                 <div id="AP">
+								
+                             </div></td>
+                         </tr>
+                         <tr>
+                             <td style="background: #C0E0C0; color: black;">|B|</td>
+                             <td>
+                                 <input class="input-mini venn_area" id="B" type="hidden"> <input id="BT" style="background: #C0E0C0; color: black; width: 5em;">
+                             </td>
+                             <td style="background: #C0E0C0; color: black; ">
+                                 <div id="BP">
+                             </div></td>
+                         </tr>
+                         <tr>
+                             <td style="background: #F4D5C0; color: black;">|C|</td>
+                             <td>
+                                 <input class="input-mini venn_area" id="C" type="hidden"><input id="CT" style="background: #F4D5C0; color: black; width: 5em;">
+                             </td>
+                             <td style="background: #F4D5C0; color: black;">
+                                 <div id="CP">
+                             </div></td>
+                         </tr>
+                         <tr>
+                             <td style="background: #91B1C1; color: black;">|A∩B|</td>
+                             <td>
+                                 <input class="input-mini venn_area" id="A,B" type="hidden"><input id="ABT" style="background: #91B1C1; color: black; width: 5em;">
+                             </td>
+                             <td style="background: #91B1C1; color: black;">
+                                 <div id="ABP">
+                             </div></td>
+                         </tr>
+                         <tr>
+                             <td style="background: #C6A5C0; color: black;">|A∩C|</td>
+                             <td>
+                                 <input class="input-mini venn_area" id="A,C" type="hidden"><input id="ACT" style="background: #C6A5C0; color: black; width: 5em;">
+                             </td>
+                             <td style="background: #C6A5C0; color: black;">
+                                 <div id="ACP">
+                             </div></td>
+                         </tr>
+                         <tr>
+                             <td style="background: #C5BE90; color: black;">|B∩C|</td>
+                             <td>
+                                 <input class="input-mini venn_area" id="B,C" type="hidden"><input id="BCT" style="background: #C5BE90; color: black; width: 5em;">
+                             </td>
+                             <td style="background: #C5BE90; color: black;">
+                                 <div id="BCP">
+                             </div></td>
+                         </tr>
+                         <tr>
+                             <td style="background: #A19A90; color: black;">|A∩B∩C|&nbsp;</td>
+                             <td>
+                                 <input class="input-mini venn_area" id="A,B,C" type="number" size="10" value="" style="background: #A19A90; color: black; width: 5em;">
+                             </td>
+                             <td style="background: #A19A90; color: black;">
+                                 <div id="ABCP">
+                             </div></td>
+                         </tr>
+
+              </tbody></table>
+            
+ 
+        </div></td></tr></tbody></table>
+        
+
+    
+<center>
+    <div id="my-progressbar-container" style="display: none;">
+
+        <div id="my-progressbar-text1" class="progressbar-text top-left">Initializing...</div>
+        <div id="my-progressbar-text2" class="progressbar-text top-right"></div>
+
+        <div id="my-progressbar" class="progressbar-control" style="width: 250px; height: 6px;"><div class="item-bar white" style="opacity: 1; float: left; position: absolute; width: 25%; left: 0%;"></div></div>
+
+        <div id="my-progressbar-text3" class="progressbar-text bottom-left"></div>
+        <div id="my-progressbar-text4" class="progressbar-text bottom-right"></div>
+
+    </div>
+
+    </center>
+
+
+
+
+</div>
+       
+
+
+
+<script type="text/javascript">
+    window.onload = function () {
+        $("#MyP").hide();
+
+        $("#SaveTextToFileButtom").hide();
+        $("#my-progressbar-container").hide();
+
+    };
+</script>
+<script>
+    var progressBar;
+
+
+    progressBar = new ProgressBar("my-progressbar", { 'width': '250px', 'height': '6px' });
+
+    // Start initial Mode
+    progressBar.initialMode(true);
+
+    // CHANGE OPTIONS
+    //progressBar.setOptionValue(ProgressBar.OPTION_NAME.COLOR_ID, ProgressBar.OPTION_VALUE.COLOR_ID.BLACK);
+    //progressBar.setOptionValue(ProgressBar.OPTION_NAME.OPACITY, 0.2);
+    //progressBar.setPercent(60);
+
+    // Stop Initial Mode
+    //progressBar.initialMode(false);
+
+</script>
+
+<script type="text/javascript">
+
+
+
+
+
+
+    ////////////////////////////////// Input arguments class
+    function VennDiagramArguments() {
+        var that = this;
+     
+        this.IntraGroupUnion = document.getElementById("IntraGroupOptions_union_input").checked;
+        this.IntraGroupUseQuery = document.getElementById("IntraGroupOptions_useQuery_input").checked;
+		
+        this.InterGroupsUseQuery = document.getElementById("InterGroupOptions_UseQuery_RadioButtom").checked;
+        this.chkRemoveDuplicates_isChecked = document.getElementById("IntraGroupOptions_firstHit_CheckBox").checked;
+    }
+
+    ////////////////////////////////// Input arguments class
+
+    function VennDiagramUserResults(results) {
+        var that = this;
+
+        // GrOnly1
+        this.A = results[1];
+
+        // GrOnly2
+        this.B = results[2];
+
+        // GrOnly3
+        this.C = results[4];
+
+        // Divide by the number of cells, since we count each entry by the number of cells
+        // Gr1V2
+        this.AB = results[3] / 2;
+
+        // Gr1V3
+        this.AC = results[5] / 2;
+
+        // Gr2V3
+        this.CB = results[6] / 2;
+
+        // Gr1V2V3
+        this.ABC = results[7] / 3;
+
+        this.SUM = this.A + this.B + this.C + this.AB + this.AC + this.CB + this.ABC;
+
+        this.AP = 0;
+        this.CP = 0;
+        this.BP = 0;
+        this.ABP = 0;
+        this.ACP = 0;
+        this.CBP = 0;
+        this.ABCP = 0;
+
+        if (this.SUM > 0)
+        {
+            this.AP = Math.ceil(this.A * 100 / this.SUM);
+            this.CP = Math.ceil(this.C * 100 / this.SUM);
+            this.BP = Math.ceil(this.B * 100 / this.SUM);
+            this.ABP = Math.ceil(this.AB * 100 / this.SUM);
+            this.ACP = Math.ceil(this.AC * 100 / this.SUM);
+            this.CBP = Math.ceil(this.CB * 100 / this.SUM);
+            this.ABCP = Math.ceil(this.ABC * 100 / this.SUM);
+        }
+    }
+
+
+    //////////////////////////////////////////////////
+    // Global scope variables
+
+    // Hold the Gene details from the files. array<array<GeneDetails>>
+    var allFileGenesDetails1, allFileGenesDetails2, allFileGenesDetails3;
+    // Hold the number of files to read and the counter of files that have been read so fat
+    var numFilesToRead, numFilesToReadCounter;
+    // Hold the arguments
+    var m_vennDiagramArguments;
+
+    //////////////////////////////////////////////////
+    // Events
+    // document.getElementById('fileinput1').addEventListener('change', readMultipleFiles, false);
+    document.getElementById('button1').addEventListener("click", RunVanDiagramAlgorithm_phase1, false);
+
+    document.getElementById('SaveTextToFileButtom').addEventListener("click", RunVanDiagramAlgorithm_phase1, false);
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // How to measure time in javascript
+    //var t0 = performance.now();
+    //doSomething();
+    //var t1 = performance.now();
+    //console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////
+
+
+    //////////////////////////////////////////////////
+    function ReadAllFileFromFileList(files, allFileGenesDetails) {
+
+        $("#my-progressbar-container").show();
+
+        //Retrieve all the files from the FileList object
+        if (files) {
+            for (var i = 0, f; f = files[i]; i++) {
+                var r = new FileReader();
+
+
+                r.onload = (function (f) {
+                    var callBckFunction = RunVanDiagramAlgorithm_phase2;
+                    return function (e) {
+
+                        var fileGenesDetails = new Array();
+                        var geneQuery = new OrderedMap();
+
+                        var contents = e.target.result;
+
+                        // Parse the data
+                        var contentEachLine = contents.split("\n");
+                        for (var jj = 0; jj < contentEachLine.length; jj++) {
+                            var lineContent = contentEachLine[jj].split("\t");
+
+                            // Verify there line structure is correct
+                            if (lineContent.length >= 2) {
+                                var geneDetails = { Query: lineContent[0], Subject: lineContent[1] };
+
+                                if (!m_vennDiagramArguments.chkRemoveDuplicates_isChecked || !geneQuery.isContainKey(geneDetails.Query)) {
+                                    geneQuery.set(geneDetails.Query, geneDetails.Query);
+                                    fileGenesDetails.push(geneDetails);
+                                }
+                            }
+                        }
+                        allFileGenesDetails.push(fileGenesDetails);
+                        FinishReadingFile(callBckFunction);
+                    };
+                })(f);
+                r.readAsText(f);
+            }
+        }
+        else {
+            alert("Failed to load files");
+        }
+    }
+    //////////////////////////////////////////////////
+
+
+    //////////////////////////////////////////////////
+    function FinishReadingFile(callback) {
+        ++numFilesToReadCounter;
+        if (numFilesToReadCounter == numFilesToRead)
+        {
+            // after finish reading all the files, call the callback function, which is step 2 of the algorithm
+            if (callback && typeof callback == "function")
+                callback();
+        }
+    }
+
+    //////////////////////////////////////////////////
+
+    ////////////////////////////////// Algorithm main structure
+
+    function Initialize()
+    {
+        // Initializers
+        numFilesToRead = 0;
+        numFilesToReadCounter = 0;
+
+        allFileGenesDetails1 = new Array();
+        allFileGenesDetails2 = new Array();
+        allFileGenesDetails3 = new Array();
+
+        m_vennDiagramArguments = new VennDiagramArguments();
+    }
+
+
+    function ReadFilesFromFileLists() {
+
+        // Read files from file lists, allFileGenesDetails* is an object that pass by value as a reference to an object
+        var fileList1 = document.getElementById('fileinput1').files;
+        var fileList2 = document.getElementById('fileinput2').files;
+        var fileList3 = document.getElementById('fileinput3').files;
+        numFilesToRead = fileList1.length + fileList2.length + +fileList3.length;
+
+        ReadAllFileFromFileList(fileList1, allFileGenesDetails1);
+        ReadAllFileFromFileList(fileList2, allFileGenesDetails2);
+        ReadAllFileFromFileList(fileList3, allFileGenesDetails3);
+
+    }
+
+
+    function RunVanDiagramAlgorithm_phase1(evt) {
+        Initialize();
+
+        ReadFilesFromFileLists();
+    }
+
+
+    function UnionGroupFiles(allFileGenesDetails)
+    {
+        // Map <Key, Array<GeneDetails>>
+        var keyToGeneDetailMapping = new Hash();
+
+        // Iterate for each file in the file group
+        for (var i = 0; i < allFileGenesDetails.length; i++)
+        {
+            var currentFileGeneDetails = allFileGenesDetails[i];
+
+            // Iterate over array of Gene Details in the current file
+            for (var j = 0; j < currentFileGeneDetails.length; j++)
+            {
+                var geneDetails = currentFileGeneDetails[j];
+
+                var key = m_vennDiagramArguments.IntraGroupUseQuery ? geneDetails.Query : geneDetails.Subject;
+
+                if (!keyToGeneDetailMapping.hasItem(key))
+                {
+                    keyToGeneDetailMapping.setItem(key, new Array());
+                }
+                keyToGeneDetailMapping.getItem(key).push(geneDetails);
+            }
+        }
+
+        return keyToGeneDetailMapping;
+    }
+
+
+    function IsAllArrayTrue(arr)
+    {
+        var isAllTrue = true;
+        for (var i = 0; i < arr.length && isAllTrue; i++)
+        {
+            isAllTrue &= arr[i];
+        }
+
+
+        return isAllTrue;
+    }
+
+
+    function IntersectGroupFiles(allFileGenesDetails) {
+
+        // Map <Key, Array<GeneDetails>>
+        var keyToGeneDetailMappingCounter = new Hash();
+
+        // Iterate for each file in the file group
+        for (var i = 0; i < allFileGenesDetails.length; i++) {
+            var currentFileGeneDetails = allFileGenesDetails[i];
+
+            // Iterate over array of Gene Details in the current file
+            for (var j = 0; j < currentFileGeneDetails.length; j++) {
+                var geneDetails = currentFileGeneDetails[j];
+
+                var key = m_vennDiagramArguments.IntraGroupUseQuery ? geneDetails.Query : geneDetails.Subject;
+
+                if (!keyToGeneDetailMappingCounter.hasItem(key)) {
+                    var intersectionStatus = Array(allFileGenesDetails.length);
+                    for (var qq = 0; qq < intersectionStatus.length; qq++)
+                    {
+                        intersectionStatus[qq] = false;
+                    }
+                    intersectionStatus[i] = true;
+
+                    keyToGeneDetailMappingCounter.setItem(key, intersectionStatus);
+                }
+                else
+                {
+                    keyToGeneDetailMappingCounter.getItem(key)[i] = true;
+                }
+            }
+        }
+
+
+        // Union only the full counter matching
+        var keyToGeneDetailMapping = new Hash();
+
+        // Iterate for each file in the file group
+        for (var i = 0; i < allFileGenesDetails.length; i++) {
+            var currentFileGeneDetails = allFileGenesDetails[i];
+
+            // Iterate over array of Gene Details in the current file
+            for (var j = 0; j < currentFileGeneDetails.length; j++) {
+                var geneDetails = currentFileGeneDetails[j];
+
+                var key = m_vennDiagramArguments.IntraGroupUseQuery ? geneDetails.Query : geneDetails.Subject;
+
+                if (IsAllArrayTrue(keyToGeneDetailMappingCounter.getItem(key)))
+                {
+                    if (!keyToGeneDetailMapping.hasItem(key)) {
+                        keyToGeneDetailMapping.setItem(key, new Array());
+                    }
+
+                    var isGenDetailIsNotContained = true; 
+                    for (var qq = 0; qq < keyToGeneDetailMapping.getItem(key).length && isGenDetailIsNotContained; qq++)
+                    {
+                        var currentGeneDetail = keyToGeneDetailMapping.getItem(key)[qq];
+                        if (currentGeneDetail.Query == geneDetails.Query && currentGeneDetail.Subject == geneDetails.Subject)
+                            isGenDetailIsNotContained = false; 
+                    }
+                    if (isGenDetailIsNotContained)
+                        keyToGeneDetailMapping.getItem(key).push(geneDetails);
+                    
+                }
+            }
+        }
+
+        return keyToGeneDetailMapping;
+    }
+
+
+    function SetWithAllKeys(keyToGeneDetailMappingGroup, allKeys)
+    {
+        // Create an set of all keys from all groups
+        for (var k in keyToGeneDetailMappingGroup.items) {
+            if (keyToGeneDetailMappingGroup.items.hasOwnProperty(k)) {
+                if (!allKeys.hasItem(k))
+                    allKeys.setItem(k,k);
+            }
+        }
+    }
+
+
+    function CreateSetWithAllKeys(keyToGeneDetailMappingGroupArray) {
+
+        var allKeys = new Hash();
+
+        for (var i = 0; i < keyToGeneDetailMappingGroupArray.length; i++)
+        {
+            SetWithAllKeys(keyToGeneDetailMappingGroupArray[i], allKeys);
+        }
+
+        return allKeys;
+    }
+
+
+    function IntersectGroups(keyToGeneDetailMappingGroupArray) {
+
+        allKeys = CreateSetWithAllKeys(keyToGeneDetailMappingGroupArray);
+
+        var numElements = Math.pow(2, keyToGeneDetailMappingGroupArray.length);
+        var results = new Array(numElements);
+        var results1 = new Array(numElements);
+
+        for (var j = 0; j < results.length; j++)
+        {
+            results[j] = 0;
+	            results1[j] = "";
+        }
+
+
+        // Run for every key (for all groups)
+        for (var currentKey in allKeys.items)
+        {
+            
+			var linescontentSubject="";	
+			var linescontentQuery="";
+			var dataAll="";
+			var databegin="";
+            var index = 0;
+			            var sumElements = 0;
+
+            // Run for every group
+            for (var k = 0; k < keyToGeneDetailMappingGroupArray.length; k++)
+            {
+                var isGroupContained = keyToGeneDetailMappingGroupArray[k].hasItem(currentKey);
+
+                if (isGroupContained)
+                {
+                    //Not relevent: Watch the data structures: sumElements += keyToGeneDetailMappingGroupArray[k].getItem(currentKey).length;
+                    sumElements += 1; 
+					
+			     	linescontentSubject += keyToGeneDetailMappingGroupArray[k].items[currentKey][0].Subject;
+					linescontentQuery += keyToGeneDetailMappingGroupArray[k].items[currentKey][0].Query;
+					databegin= linescontentQuery   +  "," +linescontentSubject ;
+
+					dataAll=dataAll +   databegin   + "\r";
+
+
+                    index += Math.pow(2, k);
+                }
+            }
+            results[index] += sumElements;
+            results1[index] += dataAll;
+
+        }
+        return results;
+		return results1;
+    }
+	
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+    function UnionGroupsOfFiles()
+    {
+        keyToGeneDetailMappingGroup1 = UnionGroupFiles(allFileGenesDetails1);
+        keyToGeneDetailMappingGroup2 = UnionGroupFiles(allFileGenesDetails2);
+        keyToGeneDetailMappingGroup3 = UnionGroupFiles(allFileGenesDetails3);
+
+        return [keyToGeneDetailMappingGroup1, keyToGeneDetailMappingGroup2, keyToGeneDetailMappingGroup3];
+    }
+
+
+    function IntersectGroupsOfFiles() {
+        keyToGeneDetailMappingGroup1 = IntersectGroupFiles(allFileGenesDetails1);
+        keyToGeneDetailMappingGroup2 = IntersectGroupFiles(allFileGenesDetails2);
+        keyToGeneDetailMappingGroup3 = IntersectGroupFiles(allFileGenesDetails3);
+
+        return [keyToGeneDetailMappingGroup1, keyToGeneDetailMappingGroup2, keyToGeneDetailMappingGroup3];
+    }
+
+
+    function SwitchKeyOfDictionary(allFileGenesDetails)
+    { 
+        // Union only the full counter matching
+        var keyToGeneDetailMapping = new Hash();
+         
+        for (var currentKey in allFileGenesDetails.items)
+        {
+            geneDetailArray = allFileGenesDetails.getItem(currentKey);
+            for (var i = 0; i < geneDetailArray.length; i++)
+            {
+                var geneDetail = geneDetailArray[i]; 
+
+                var key = m_vennDiagramArguments.InterGroupsUseQuery ? geneDetail.Query : geneDetail.Subject;
+
+                if (!keyToGeneDetailMapping.hasItem(key)) {
+                    keyToGeneDetailMapping.setItem(key, new Array());
+                }
+                keyToGeneDetailMapping.getItem(key).push(geneDetail);
+            }
+        }
+
+        return keyToGeneDetailMapping;
+    }
+
+
+    function SwitchKeyOfDictionaries(keyToGeneDetailMapping) {
+        keyToGeneDetailMappingGroup1 = SwitchKeyOfDictionary(keyToGeneDetailMapping[0]);
+        keyToGeneDetailMappingGroup2 = SwitchKeyOfDictionary(keyToGeneDetailMapping[1]);
+        keyToGeneDetailMappingGroup3 = SwitchKeyOfDictionary(keyToGeneDetailMapping[2]);
+
+        return [keyToGeneDetailMappingGroup1, keyToGeneDetailMappingGroup2, keyToGeneDetailMappingGroup3];
+    }
+
+
+    function ConvertResultToUserOutput(result)
+    {
+        var vennDiagramUserResults = new VennDiagramUserResults(result);
+
+        return vennDiagramUserResults;
+    }
+
+
+    function CleanResources()
+    {
+        Initialize();
+    }
+
+
+    function DisplayResults(userResults) {
+        document.getElementById("A").value = userResults.A+userResults.AB+userResults.AC+userResults.ABC;
+        document.getElementById("B").value = userResults.B+userResults.AB+userResults.CB+userResults.ABC;
+        document.getElementById("C").value = userResults.C+userResults.AC+userResults.CB+userResults.ABC;
+		
+
+	        document.getElementById("AT").value = userResults.A;
+        document.getElementById("BT").value = userResults.B;
+        document.getElementById("CT").value = userResults.C;
+		
+	        document.getElementById("ABT").value = userResults.AB;
+        document.getElementById("ACT").value = userResults.AC;
+        document.getElementById("BCT").value = userResults.CB;
+		
+		
+
+        document.getElementById("A,B").value = userResults.AB+userResults.ABC;
+        document.getElementById("A,C").value = userResults.AC+userResults.ABC;
+        document.getElementById("B,C").value = userResults.CB+userResults.ABC;
+
+        document.getElementById("A,B,C").value = userResults.ABC;
+
+        document.getElementById("AP").innerHTML = userResults.AP + ("%");
+        document.getElementById("BP").innerHTML = userResults.BP + ("%");
+        document.getElementById("CP").innerHTML = userResults.CP + ("%");
+        document.getElementById("ABP").innerHTML = userResults.ABP + ("%");
+        document.getElementById("ACP").innerHTML = userResults.ACP + ("%");
+        document.getElementById("BCP").innerHTML = userResults.CBP + ("%");
+        document.getElementById("ABCP").innerHTML = userResults.ABCP + ("%");
+
+
+
+
+
+////////////////////////////////////////
+
+
+$("#SaveTextToFileButtom").click(function()
+{
+   $(this).data('clicked', true);
+});
+
+if($("#SaveTextToFileButtom").data('clicked'))
+{
+
+
+
+
+
+
+  allKeys = CreateSetWithAllKeys(keyToGeneDetailMappingGroupArray);
+
+        var numElements = Math.pow(2, keyToGeneDetailMappingGroupArray.length);
+ 		var results= new Array(numElements);
+
+		var results1= new Array(numElements);
+        for (var j = 0; j < results.length; j++)
+        {
+            
+			results1[j] = "";
+        }
+
+
+        // Run for every key (for all groups)
+        for (var currentKey in allKeys.items)
+        {
+   
+			var linescontentSubject="";	
+			var linescontentQuery="";
+			var dataAll="";
+			var databegin="";
+            var index = 0;
+			            var sumElements = 0;
+            // Run for every group
+            for (var k = 0; k < keyToGeneDetailMappingGroupArray.length; k++)
+            {
+
+                var isGroupContained = keyToGeneDetailMappingGroupArray[k].hasItem(currentKey);
+
+                if (isGroupContained)
+                {
+                    //Not relevent: Watch the data structures: sumElements += keyToGeneDetailMappingGroupArray[k].getItem(currentKey).length;
+                    sumElements += 1; 
+					linescontentSubject = keyToGeneDetailMappingGroupArray[k].items[currentKey][0].Subject;
+					linescontentQuery = keyToGeneDetailMappingGroupArray[k].items[currentKey][0].Query;
+					databegin =  linescontentSubject+","+linescontentQuery  ;
+					if(dataAll.includes( linescontentQuery )){dataAll= linescontentSubject+","+dataAll  ;}
+					
+				
+					else {
+					dataAll=dataAll + databegin + '\r\n';
+					}
+					
+                    index += Math.pow(2, k);
+                }
+            }
+            
+			results1[index] += dataAll;
+        }
+
+
+for (var i=0; i<8; i++){
+var filename1="";
+if (i==1) { filename1="GrouopA"; }
+if (i==2) { filename1="GrouopB"; }
+if (i==4) { filename1="GrouopC"; }
+if (i==3) { filename1="GrouopAB"; }
+if (i==5) { filename1="GrouopAC"; }
+if (i==6) { filename1="GrouopBC"; }
+if (i==7) { filename1="GrouopABC"; }
+
+   var data = [[results1[i]]];
+
+var csvContent = '';
+data.forEach(function (infoArray, index) {
+dataString= Array.prototype.join.call(infoArray, "");
+
+  csvContent += index < data.length ? dataString + '\n' : dataString;
+});
+
+var download = function(content, fileName, mimeType) {
+  var a = document.createElement('a');
+  mimeType = mimeType || 'application/octet-stream';
+
+  if (navigator.msSaveBlob) { // IE10
+    return navigator.msSaveBlob(new Blob([content], { type: mimeType }), fileName);
+  } else if ('download' in a) { //html5 A[download]
+    a.href = 'data:' + mimeType + ',' + encodeURIComponent(content);
+    a.setAttribute('download', fileName);
+    document.body.appendChild(a);
+    setTimeout(function() {
+      a.click();
+      document.body.removeChild(a);
+    }, 66);
+    return true;
+  } else { //do iframe dataURL download (old ch+FF):
+    var f = document.createElement('iframe');
+    document.body.appendChild(f);
+    f.src = 'data:' + mimeType + ',' + encodeURIComponent(content);
+
+    setTimeout(function() {
+      document.body.removeChild(f);
+    }, 333);
+    return true;
+  }
+}
+
+download(csvContent, filename1+'.csv', 'text/csv');
+
+}
+////////////
+
+
+}
+
+
+
+//////////////////////////////////////////////
+
+
+
+
+        $("#SaveTextToFileButtom").show();
+
+      $("#my-progressbar-container").hide();
+        function getSetIntersections() {
+            areas = d3.selectAll(".venn_area")[0].map(
+                function (element) {
+                    return {
+                        sets: element.id.split(","),
+                        size: parseFloat(element.value)
+                    };
+                });
+            return areas;
+        }
+
+
+        // draw the initial set
+        var chart = venn.VennDiagram()
+                         .width(600)
+                         .height(500);
+
+        d3.select("#venn").datum(getSetIntersections()).call(chart);
+        // redraw the sets on any change in input
+        d3.selectAll("input").on("change", function () {
+
+
+            d3.select("#venn").datum(getSetIntersections()).call(chart);
+
+        });
+		
+
+
+        $("#MyP").show();
+  
+        /////////////////////////////////////////////
+    }
+
+
+    function RunVanDiagramAlgorithm_phase2() {
+
+        // Continue the algorithm, this is the 2nd phase
+
+        if (m_vennDiagramArguments.IntraGroupUnion) {
+            keyToGeneDetailMappingGroupArray = UnionGroupsOfFiles()
+        }
+        else {
+            keyToGeneDetailMappingGroupArray = IntersectGroupsOfFiles();
+        }
+
+        if (m_vennDiagramArguments.InterGroupsUseQuery != m_vennDiagramArguments.IntraGroupUseQuery) {
+            keyToGeneDetailMappingGroupArray = SwitchKeyOfDictionaries(keyToGeneDetailMappingGroupArray)
+        }
+
+        result = IntersectGroups(keyToGeneDetailMappingGroupArray);
+
+        userResults = ConvertResultToUserOutput(result);
+
+        DisplayResults(userResults);
+
+        CleanResources();
+		
+    }
+</script>
+    
+
+
+<div id="adidiMorfixChromeExtensionBalloon" class="adidi-mceb-topRight"><div class="adidi-mceb-img-box"><img src="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/icons/icon.png"></div>
+     <div class="adidi-mceb-x-box"><img src="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/icons/x.png"></div>
+     <div class="adidi-mceb-title-box"><div class="adidi-mceb-t"></div></div>
+     <div class="adidi-mceb-content"></div>
+     <div class="adidi-mceb-footer">
+          <img src="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/icons/settings.png">
+          <a href="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/settings.html" target="_blank">Settings</a>
+    </div></div></body></html>

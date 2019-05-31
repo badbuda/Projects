@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)http://212.150.245.226/~bareket/filter.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head runat="server"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>VennBlast-Filter</title>
+  <link rel="stylesheet" href="./VennBlast-Filter_files/main.css"> 
+    <script type="text/javascript" src="./VennBlast-Filter_files/jquery-3.1.0.js"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>
+    <script type="text/javascript" src="./VennBlast-Filter_files/JavaScript1.js"></script>
+    <script type="text/javascript" src="./VennBlast-Filter_files/filereader.js"></script>
+    <script type="text/javascript" src="./VennBlast-Filter_files/ReadFile.js"></script>
+    <script type="text/javascript" src="./VennBlast-Filter_files/Hash.js"></script>
+    <script type="text/javascript" src="./VennBlast-Filter_files/hashset.js"></script>
+    <script type="text/javascript" src="./VennBlast-Filter_files/hashtable.js"></script>
+    <script type="text/javascript" src="./VennBlast-Filter_files/OrderedMap.js"></script>
+    <script type="text/javascript" src="./VennBlast-Filter_files/DownloadFile.js"></script>
+<script async="" src="./VennBlast-Filter_files/adblocker-chromeglobalinjectjs.js"></script></head>
+
+
+<body>
+  <div id="header">
+ <table width="90%"><tbody><tr><td width="90%"><h1 style="color:white">VennBlast - Filter<img src="./VennBlast-Filter_files/venndiagram.png" height="30" width="32"></h1></td>  <td><img src="./VennBlast-Filter_files/ariel_logo_en.jpg" width="150" height="40"></td></tr></tbody></table>
+ <br></div>
+    <div class="box">
+<div id="locator">
+<img src="./VennBlast-Filter_files/filter.png"><br>
+</div>
+<center>
+  <form id="form1" runat="server">
+ <table><tbody><tr><td style="border-collapse: collapse; border: 1px solid black; background-color: white;" width="50%">   
+    <div>
+
+
+    <b>        Upload files:</b>
+        
+        <input type="file" id="fileToLoad" multiple=""></div>
+        <p>
+      <b>      Filtering:</b>
+        </p>
+        <p>
+            <input type="CheckBox" id="IdentityEnable" checked="">identity(%)
+            <input type="textarea" id="Identity" value="70" height="16px" style="margin-top: 0px;width: 5em;">
+            <input type="CheckBox" id="GapEnable">gap
+
+            <input type="textarea" id="Gap" value="0" disabled="" style="margin-top: 0px;width: 5em;">
+        </p>
+        <input type="CheckBox" id="AlignmentLengthEnable">alignment length
+        <input type="textarea" id="AlignmentLength" value="100" disabled="" style="margin-top: 0px;width: 5em;"> 
+        <input type="CheckBox" id="EvalueEnable" checked="">E value
+				<input type="textarea" id="Evalue" value="" style="margin-top: 0px; width: 0em; display: none;">
+        <input type="textarea" id="Evalue1" value="1.0" style="margin-top: 0px;width: 5em;">E-
+		<input type="textarea" id="Evalue2" value="5" style="margin-top: 0px;width: 5em;">
+
+        <p>
+            <input type="CheckBox" id="MismatchesEnable">mismatches
+            <input type="textarea" id="Mismatches" value="30" disabled="" style="margin-top: 0px;width: 5em;">
+            <input type="CheckBox" id="BitScoreEnable">bit score
+            <input type="textarea" id="BitScore" value="100" disabled="" style="margin-top: 0px;width: 5em;">
+            <input type="CheckBox" id="CoverageEnable">coverage %
+            <input type="textarea" id="Coverage" disabled="" value="40" style="margin-top: 0px;width: 5em;">
+        </p>
+        <input type="button" id="FilterButtom" value="Apply Filter">
+
+        
+            <input type="button" id="SaveTextToFileButtom" value="Save Text to File">
+			
+			<br><br>
+     </td>
+
+    
+	<td><div id="result"></div></td></tr><tr><td>
+					<a href="http://www.ariel.ac.il/images/stories/site/projects/FunctionalBioinformaticsLab/Test_Data.zip"> Download Test Data</a> &nbsp; &nbsp;
+								<a href="http://212.150.245.226/~bareket/merge.html">Merge Files</a>&nbsp; &nbsp;
+					<a href="http://www.ariel.ac.il/images/stories/site/projects/FunctionalBioinformaticsLab/VennBLAST_v1.zip">VennBlast Download Exe</a>
+
+
+</td></tr>
+</tbody></table><br><br>
+
+
+    <script type="text/javascript">
+ $("#Evalue").hide();
+        //////////////////////////////////////////////////
+        // Global scope variables
+        var m_numFilesToRead, m_numFilesToReadCounter;
+
+        // Hold the parameters for the filter
+        var m_filterArguments;
+
+        var m_filesFilterDetails;
+
+        var m_isSaveFiles;
+
+        var m_files;
+
+        //////////////////////////////////////////////////
+        // Events
+        document.getElementById('FilterButtom').addEventListener("click", RunFilter_withoutSave, false);
+
+        document.getElementById('SaveTextToFileButtom').addEventListener("click", RunFilter_withSave, false);
+
+        //////////////////////////////////////////////////
+        //////////////////////////////////////////////////
+        // How to measure time in javascript
+        //var t0 = performance.now();
+        //doSomething();
+        //var t1 = performance.now();
+        //console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+        //////////////////////////////////////////////////
+        //////////////////////////////////////////////////
+
+        //////////////////////////////////////////////////
+
+        ///////////////////
+
+        function FilterArguments() {
+            var that = this;
+
+
+            ////////////////////////////////
+            // Set Default values 
+            this.IdentityEnable = false;
+            this.Identity = 0;
+
+            this.AlignmentLengthEnable = false;
+            this.AlignmentLength = 0;
+
+            this.MismatchesEnable = false;
+            this.Mismatches = 0;
+
+            this.GapEnable = false;
+            this.Gap = 0;
+
+            this.EvalueEnable = false;
+            this.Evalue1 = 0;
+			this.Evalue2 = 0;
+			this.Evalue = 0;
+			
+            this.BitScoreEnable = false;
+            this.BitScore = 0;
+
+            this.CoverageEnable = false;
+            this.Coverage = 0;
+            ///////////////////////////////
+			var x=(parseFloat(document.getElementById('Evalue1').value))*10;
+			var y= (parseFloat(document.getElementById('Evalue2').value)) ;
+
+            this.IdentityEnable = document.getElementById('IdentityEnable').checked;
+            if (this.IdentityEnable)
+                this.Identity = parseFloat(document.getElementById('Identity').value);
+
+            this.AlignmentLengthEnable = document.getElementById('AlignmentLengthEnable').checked;
+            if (this.AlignmentLengthEnable)
+                this.AlignmentLength = parseInt(document.getElementById('AlignmentLength').value);
+
+			this.MismatchesEnable = document.getElementById('MismatchesEnable').checked;
+            if (this.MismatchesEnable)
+                this.Mismatches = parseInt(document.getElementById('Mismatches').value);
+
+            this.GapEnable = document.getElementById('GapEnable').checked;
+            if (this.GapEnable)
+                this.Gap = parseInt(document.getElementById('Gap').value);
+
+            this.EvalueEnable = document.getElementById('EvalueEnable').checked;
+            if (this.EvalueEnable)
+                this.Evalue =Math.pow(x,-y);
+
+			this.BitScoreEnable = document.getElementById('BitScoreEnable').checked;
+            if (this.BitScoreEnable)
+                this.BitScore = parseInt(document.getElementById('BitScore').value);
+
+            this.CoverageEnable = document.getElementById('CoverageEnable').checked;
+            if (this.CoverageEnable)
+                this.Coverage = parseInt(document.getElementById('Coverage').value);
+
+
+  
+        }
+        //////////////////////
+
+
+        function Initialize(isSaveFiles) {
+            // Initializers
+            m_isSaveFiles = isSaveFiles;
+
+            m_files = new Array();
+            m_files = document.getElementById('fileToLoad').files;
+
+            m_numFilesToRead = m_files.length;
+            m_numFilesToReadCounter = 0;
+
+            m_filesFilterDetails = new Array();
+
+            m_filterArguments = new FilterArguments();
+        }
+
+
+        function RunFilter_withoutSave() {
+            RunFilter_phase1(false);
+        }
+
+
+        function RunFilter_withSave() {
+            RunFilter_phase1(true);
+        }
+
+
+        function RunFilter_phase1(isSaveFiles) {
+
+            Initialize(isSaveFiles);
+
+            ReadFilesFromFileLists();
+        }
+
+
+        function RunFilter_phase2() {
+            try {
+			var alldata="<h1><B>File Output:</B></h1><br>";
+
+                // Update results from:
+                for (var i = 0; i < m_filesFilterDetails.length; i++) {
+                    //var fileDetail = { LinesBeforeFilter: contentEachLine.length, LinesAfterFilter: numberOfLinesAfterFilter };
+                    var fileDetail = m_filesFilterDetails[i];
+
+
+					//var path = document.getElementById("fileToLoad").value;
+			        //var pos =path.lastIndexOf( path.charAt( path.indexOf(":")+1) );
+                    //var filenamee = path.substring( pos+1);
+                    var filenamee = fileDetail.FileName;
+					alldata=alldata + filenamee +": <b>Lines Before Filter:</b> "+ fileDetail.LinesBeforeFilter + " <b>Lines After Filter:</b> " + fileDetail.LinesAfterFilter +"<br>";
+
+                }
+								document.getElementById("result").innerHTML=alldata;
+
+            }
+            catch (e) {
+                alert("Error in RunFilter_phase2");
+            }
+        }
+
+
+        function CheckOneLine(lineContent) {
+            // Verify there line structure is correct
+            if (lineContent.Length < 13) {
+                return false;
+            }
+
+            if (m_filterArguments.IdentityEnable && m_filterArguments.Identity > parseInt(lineContent[2])) {
+                return false;
+            }
+
+            if (m_filterArguments.AlignmentLengthEnable && m_filterArguments.AlignmentLength > parseInt(lineContent[3])) {
+                return false;
+            }
+
+            if (m_filterArguments.MismatchesEnable && m_filterArguments.Mismatches < parseInt(lineContent[4])) {
+                return false;
+            }
+
+            if (m_filterArguments.GapEnable && m_filterArguments.Gap < parseInt(lineContent[5])) {
+                return false;
+            }
+
+            if (m_filterArguments.EvalueEnable && m_filterArguments.Evalue < parseFloat(lineContent[10])) {
+                return false;
+            }
+
+            if (m_filterArguments.BitScoreEnable && m_filterArguments.BitScore > parseInt(lineContent[11])) {
+                return false;
+            }
+
+            if (m_filterArguments.CoverageEnable && m_filterArguments.Coverage > parseInt(lineContent[12])) {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        function CalcNumberOfLinesAfterFilter_andWriteToFile(contentEachLine) {
+            var newFileContent = "";
+            var numberOfLinesAfterFilter = 0;
+
+            for (var jj = 0; jj < contentEachLine.length; jj++) {
+                var lineContent = contentEachLine[jj];
+                var lineContentSplit = lineContent.split("\t");
+                if (CheckOneLine(lineContentSplit)) {
+                    numberOfLinesAfterFilter++;
+                    newFileContent += lineContent;
+                    if (jj != contentEachLine.length - 1) {
+                        // Don't introduce new line in the last sentance of the file
+                        newFileContent += "\n";
+                    }
+                }
+            }
+
+            return [numberOfLinesAfterFilter, newFileContent];
+        }
+
+
+        function CalcNumberOfLinesAfterFilter(contentEachLine) {
+            var numberOfLinesAfterFilter = 0;
+            for (var jj = 0; jj < contentEachLine.length; jj++) {
+                var lineContentSplit = contentEachLine[jj].split("\t");
+                if (CheckOneLine(lineContentSplit))
+                {
+                    numberOfLinesAfterFilter++;
+                }
+            }
+
+            return numberOfLinesAfterFilter;
+        }
+
+
+        function ExcludeEmptyLines(contentEachLine) {
+            // In order to obtain full compatiability with C# code, exclude empty lines from the array
+
+            contentEachLineTemp = new Array();
+
+            for (qq = 0; qq < contentEachLine.length; qq++) {
+                var value = contentEachLine[qq]
+                if (value != "") {
+                    contentEachLineTemp.push(value);
+                }
+            }
+            return contentEachLineTemp;
+        }
+
+        function GenerateOutputFileName(fileName) {
+            var index = fileName.lastIndexOf(".");
+            var prefixFileName = fileName.slice(0, index);
+            var suffixFileName = fileName.slice(index, fileName.lenght);
+            var newFileName = prefixFileName + "_Filtered" + suffixFileName;
+
+            return newFileName;
+        }
+
+
+        function ReadFilesFromFileLists() {
+
+            // Read files from file lists, allFileGenesDetails* is an object that pass by value as a reference to an object
+            if (m_files) {
+                for (var i = 0, f; f = m_files[i]; i++) {
+                    var r = new FileReader();
+
+                    r.onload = (function (f) {
+                        var callBckFunction = RunFilter_phase2;
+                        return function (e) {
+
+                            var contents = e.target.result;
+
+                            var contentEachLine = contents.split("\n");
+
+                            contentEachLine = ExcludeEmptyLines(contentEachLine);
+
+                            if (m_isSaveFiles) {
+                                functionOutput = CalcNumberOfLinesAfterFilter_andWriteToFile(contentEachLine);
+                                numberOfLinesAfterFilter = functionOutput[0];
+                                newFileContent = functionOutput[1];
+
+                                // Generate new filename
+                                var outputFileName = GenerateOutputFileName(m_files[m_numFilesToReadCounter].name);
+
+								
+								
+            var textToSaveAsBlob = new Blob([newFileContent], { type: "text/plain" });
+            var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+
+            var downloadLink = document.createElement("a");
+            downloadLink.download = outputFileName;
+            downloadLink.innerHTML = "Download File";
+            downloadLink.href = textToSaveAsURL;
+            downloadLink.onclick = destroyClickedElement;
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+
+            downloadLink.click();
+        
+
+        function destroyClickedElement(event) {
+            document.body.removeChild(event.target);
+        }
+								
+								
+								
+                                // Save the output file
+                            }
+                            else {
+                                numberOfLinesAfterFilter = CalcNumberOfLinesAfterFilter(contentEachLine);
+                            }
+
+                            var fileDetails = { FileName: m_files[m_numFilesToReadCounter].name, LinesBeforeFilter: contentEachLine.length, LinesAfterFilter: numberOfLinesAfterFilter };
+
+                            m_filesFilterDetails.push(fileDetails);
+
+                            FinishReadingFile(callBckFunction);
+                        };
+                    })(f);
+                    r.readAsText(f);
+                }
+            }
+            else {
+                alert("Failed to load files");
+            }
+        }
+
+        //////////////////////////////////////////////////
+        function FinishReadingFile(callback) {
+            if (++m_numFilesToReadCounter == m_numFilesToRead) {
+                // after finish reading all the files, call the callback function, which is step 2 of the algorithm
+                if (callback && typeof callback == "function")
+                    callback();
+            }
+        }
+        //////////////////////////////////////////////////
+        //////////////////////////////////////////////////
+
+        document.getElementById('IdentityEnable').onchange = function () {
+            document.getElementById('Identity').disabled = !this.checked;
+        };
+        document.getElementById('GapEnable').onchange = function () {
+            document.getElementById('Gap').disabled = !this.checked;
+        };
+
+        document.getElementById('AlignmentLengthEnable').onchange = function () {
+            document.getElementById('AlignmentLength').disabled = !this.checked;
+        };
+
+        document.getElementById('EvalueEnable').onchange = function () {
+        document.getElementById('Evalue1').disabled = !this.checked;
+		document.getElementById('Evalue2').disabled = !this.checked;
+
+        };
+
+        document.getElementById('MismatchesEnable').onchange = function () {
+            document.getElementById('Mismatches').disabled = !this.checked;
+        };
+
+        document.getElementById('BitScoreEnable').onchange = function () {
+            document.getElementById('BitScore').disabled = !this.checked;
+        };
+
+        document.getElementById('CoverageEnable').onchange = function () {
+            document.getElementById('Coverage').disabled = !this.checked;
+        };
+    </script>
+
+
+    
+
+</form></center></div><div id="adidiMorfixChromeExtensionBalloon" class="adidi-mceb-topRight"><div class="adidi-mceb-img-box"><img src="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/icons/icon.png"></div>
+     <div class="adidi-mceb-x-box"><img src="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/icons/x.png"></div>
+     <div class="adidi-mceb-title-box"><div class="adidi-mceb-t"></div></div>
+     <div class="adidi-mceb-content"></div>
+     <div class="adidi-mceb-footer">
+          <img src="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/icons/settings.png">
+          <a href="chrome-extension://edapkleoiajaekmconcehhkcbehppgom/settings.html" target="_blank">Settings</a>
+    </div></div></body></html>
